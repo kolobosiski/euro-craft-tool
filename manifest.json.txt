@@ -1,0 +1,8 @@
+{
+  "name": "Euro Craft Packaging Tool",
+  "short_name": "EuroCraft",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1f3d34",
+  "theme_color": "#1f3d34"
+}
