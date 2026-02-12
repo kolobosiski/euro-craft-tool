@@ -159,7 +159,9 @@ function mmToPx(mm){
 }
 
 function update(){
-  document.getElementById("lineText").innerText = line.value;
+
+  // ТЕКСТ
+  document.getElementById("lineText").innerText = document.getElementById("line").value;
   document.getElementById("productText").innerText = product.value;
   document.getElementById("ingredientsText").innerText = ingredients.value;
   document.getElementById("weightText").innerText = weight.value;
@@ -167,18 +169,27 @@ function update(){
   document.getElementById("packedText").innerText = packed.value;
   document.getElementById("bestText").innerText = best.value;
 
+  // РАЗМЕР УПАКОВКИ
   let widthPx = mmToPx(widthMM.value);
   let heightPx = mmToPx(heightMM.value);
 
   pack.style.width = widthPx + "px";
   pack.style.height = heightPx + "px";
+
+  // 🔥 МАСШТАБ ШРИФТОВ ОТ ВЫСОТЫ
+  let scale = heightPx / 220; // 220мм = базовый размер
+
+  document.querySelector(".brand").style.fontSize = (22 * scale) + "px";
+  document.querySelector(".line").style.fontSize = (13 * scale) + "px";
+  document.querySelector(".product").style.fontSize = (20 * scale) + "px";
+  document.querySelector(".footer").style.fontSize = (11 * scale) + "px";
 }
 
 document.querySelectorAll("input, textarea, select")
 .forEach(el => el.addEventListener("input", update));
 
 function downloadImage(){
-  html2canvas(pack,{scale:2}).then(canvas=>{
+  html2canvas(pack,{scale:3}).then(canvas=>{
     let link=document.createElement("a");
     link.download="packaging.png";
     link.href=canvas.toDataURL();
@@ -191,3 +202,4 @@ update();
 
 </body>
 </html>
+
