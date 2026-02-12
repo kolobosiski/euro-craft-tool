@@ -1,96 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Euro Craft Packaging Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#1f3d34">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
 }
 
-.wrapper {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
+.wrapper{
+  display:flex;
+  gap:20px;
+  padding:20px;
 }
 
-.controls {
-  width: 300px;
-  background: #ffffff;
-  padding: 12px;
-  border-radius: 8px;
+.controls{
+  width:320px;
+  background:white;
+  padding:15px;
+  border-radius:10px;
 }
 
 .controls input,
 .controls textarea,
 .controls select,
-.controls button {
-  width: 100%;
-  margin-bottom: 8px;
-  padding: 6px;
-  font-size: 14px;
+.controls button{
+  width:100%;
+  margin-bottom:10px;
+  padding:8px;
+  font-size:14px;
 }
 
-.controls button {
-  background: #1f3d34;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+.controls button{
+  background:#1f3d34;
+  color:white;
+  border:none;
+  cursor:pointer;
 }
 
-.pack {
-  width: 340px;
-  height: 650px;
-  border-radius: 14px;
-  color: white;
-  position: relative;
-  background: #1f3d34;
+.preview-area{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-.pack.pro {
-  background: #162a24;
+.pack{
+  border-radius:14px;
+  color:white;
+  position:relative;
+  background:#1f3d34;
+  overflow:hidden;
+  transform-origin:top left;
 }
 
-.header {
-  text-align: center;
-  padding: 18px;
+.header{
+  text-align:center;
+  padding:20px;
 }
 
-.brand {
-  font-size: 22px;
-  font-weight: bold;
+.brand{
+  font-size:22px;
+  font-weight:bold;
 }
 
-.line {
-  font-size: 13px;
-  margin-top: 4px;
+.line{
+  font-size:13px;
+  margin-top:4px;
 }
 
-.product {
-  font-size: 20px;
-  margin-top: 10px;
+.product{
+  font-size:20px;
+  margin-top:10px;
 }
 
-.window {
-  height: 280px;
-  margin: 10px;
-  background: rgba(255,255,255,0.18);
-  border-radius: 8px;
+.window{
+  height:40%;
+  margin:20px;
+  background:rgba(255,255,255,0.2);
+  border-radius:10px;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  background: #ffffff;
-  color: #000;
-  width: 100%;
-  padding: 10px;
-  font-size: 11px;
+.footer{
+  position:absolute;
+  bottom:0;
+  background:white;
+  color:black;
+  width:100%;
+  padding:10px;
+  font-size:11px;
 }
 </style>
 </head>
@@ -99,59 +103,82 @@ body {
 
 <div class="wrapper">
 
-  <div class="controls">
-    <select id="line">
-      <option value="READY">READY TO EAT</option>
-      <option value="PRO">PRO</option>
-    </select>
+<div class="controls">
+<select id="line">
+<option value="READY">READY TO EAT</option>
+<option value="PRO">PRO</option>
+</select>
 
-    <input id="product" placeholder="Product name" value="SMOKED CHEESE" />
-    <textarea id="ingredients" placeholder="Ingredients">Milk, Salt, Enzyme, Smoke</textarea>
-    <input id="weight" placeholder="Net weight (g)" value="150" />
-    <input id="mrp" placeholder="MRP ₹" />
-    <input id="packed" placeholder="Packed on" />
-    <input id="best" placeholder="Best before" />
-  </div>
+<input id="product" placeholder="Product name">
+<textarea id="ingredients" placeholder="Ingredients"></textarea>
+<input id="weight" placeholder="Net weight (g)">
+<input id="mrp" placeholder="MRP">
+<input id="packed" placeholder="Packed on">
+<input id="best" placeholder="Best before">
 
-  <div class="pack" id="pack">
-    <div class="header">
-      <div class="brand">EURO CRAFT FOODS</div>
-      <div class="line" id="lineText">READY TO EAT</div>
-      <div class="product" id="productText">SMOKED CHEESE</div>
-    </div>
+<hr>
 
-    <div class="window"></div>
+<input id="widthInput" placeholder="Width (px)" value="340">
+<input id="heightInput" placeholder="Height (px)" value="650">
 
-    <div class="footer">
-      <div>INGREDIENTS: <span id="ingredientsText"></span></div>
-      <div>NET WT: <span id="weightText"></span> g</div>
-      <div>MRP: ₹<span id="mrpText"></span></div>
-      <div>PACKED: <span id="packedText"></span></div>
-      <div>BEST BEFORE: <span id="bestText"></span></div>
-      <div>FSSAI: 000319963</div>
-    </div>
-  </div>
+<button onclick="preview()">Preview Full</button>
+<button onclick="downloadImage()">Save PNG</button>
+</div>
+
+<div class="preview-area">
+<div class="pack" id="pack">
+<div class="header">
+<div class="brand">EURO CRAFT FOODS</div>
+<div class="line" id="lineText">READY TO EAT</div>
+<div class="product" id="productText"></div>
+</div>
+
+<div class="window"></div>
+
+<div class="footer">
+<div>INGREDIENTS: <span id="ingredientsText"></span></div>
+<div>NET WT: <span id="weightText"></span> g</div>
+<div>MRP: ₹<span id="mrpText"></span></div>
+<div>PACKED: <span id="packedText"></span></div>
+<div>BEST BEFORE: <span id="bestText"></span></div>
+<div>FSSAI: 000319963</div>
+</div>
+</div>
+</div>
 
 </div>
 
 <script>
 const pack = document.getElementById("pack");
 
-function update() {
-  const line = document.getElementById("line").value;
+function update(){
+document.getElementById("lineText").innerText = line.value;
+document.getElementById("productText").innerText = product.value;
+document.getElementById("ingredientsText").innerText = ingredients.value;
+document.getElementById("weightText").innerText = weight.value;
+document.getElementById("mrpText").innerText = mrp.value;
+document.getElementById("packedText").innerText = packed.value;
+document.getElementById("bestText").innerText = best.value;
 
-  pack.className = line === "PRO" ? "pack pro" : "pack";
-  document.getElementById("lineText").innerText = line === "PRO" ? "PRO" : "READY TO EAT";
-  document.getElementById("productText").innerText = product.value;
-  document.getElementById("ingredientsText").innerText = ingredients.value;
-  document.getElementById("weightText").innerText = weight.value;
-  document.getElementById("mrpText").innerText = mrp.value;
-  document.getElementById("packedText").innerText = packed.value;
-  document.getElementById("bestText").innerText = best.value;
+pack.style.width = widthInput.value + "px";
+pack.style.height = heightInput.value + "px";
 }
 
 document.querySelectorAll("input, textarea, select")
-  .forEach(el => el.addEventListener("input", update));
+.forEach(el => el.addEventListener("input", update));
+
+function preview(){
+pack.style.transform = "scale(1)";
+}
+
+function downloadImage(){
+html2canvas(pack, {scale:2}).then(canvas=>{
+let link=document.createElement("a");
+link.download="packaging.png";
+link.href=canvas.toDataURL();
+link.click();
+});
+}
 
 update();
 </script>
