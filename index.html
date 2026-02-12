@@ -182,10 +182,15 @@ function update(){
   // 🔥 МАСШТАБ ШРИФТОВ ОТ ВЫСОТЫ
   let scale = heightPx / 220; // 220мм = базовый размер
 
-  document.querySelector(".brand").style.fontSize = (22 * scale) + "px";
-  document.querySelector(".line").style.fontSize = (13 * scale) + "px";
-  document.querySelector(".product").style.fontSize = (20 * scale) + "px";
-  document.querySelector(".footer").style.fontSize = (11 * scale) + "px";
+  // БАЗОВАЯ ВЫСОТА 220мм
+let baseHeightPx = mmToPx(220);
+let ratio = heightPx / baseHeightPx;
+
+// Типографическая система
+document.querySelector(".brand").style.fontSize = (38 * ratio) + "px";
+document.querySelector(".line").style.fontSize = (18 * ratio) + "px";
+document.querySelector(".product").style.fontSize = (34 * ratio) + "px";
+document.querySelector(".footer").style.fontSize = (14 * ratio) + "px";
 }
 
 document.querySelectorAll("input, textarea, select")
@@ -205,5 +210,6 @@ update();
 
 </body>
 </html>
+
 
 
