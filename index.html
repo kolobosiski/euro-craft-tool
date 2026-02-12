@@ -57,7 +57,6 @@ body{
   position:relative;
   background:#1f3d34;
   overflow:hidden;
-  transform-origin:top left;
 }
 
 .header{
@@ -104,6 +103,7 @@ body{
 <div class="wrapper">
 
 <div class="controls">
+
 <select id="line">
 <option value="READY">READY TO EAT</option>
 <option value="PRO">PRO</option>
@@ -118,11 +118,14 @@ body{
 
 <hr>
 
-<input id="widthInput" placeholder="Width (px)" value="340">
-<input id="heightInput" placeholder="Height (px)" value="650">
+<label>Width (mm)</label>
+<input id="widthMM" type="number" value="120">
 
-<button onclick="preview()">Preview Full</button>
+<label>Height (mm)</label>
+<input id="heightMM" type="number" value="220">
+
 <button onclick="downloadImage()">Save PNG</button>
+
 </div>
 
 <div class="preview-area">
@@ -151,33 +154,36 @@ body{
 <script>
 const pack = document.getElementById("pack");
 
-function update(){
-document.getElementById("lineText").innerText = line.value;
-document.getElementById("productText").innerText = product.value;
-document.getElementById("ingredientsText").innerText = ingredients.value;
-document.getElementById("weightText").innerText = weight.value;
-document.getElementById("mrpText").innerText = mrp.value;
-document.getElementById("packedText").innerText = packed.value;
-document.getElementById("bestText").innerText = best.value;
+function mmToPx(mm){
+  return mm * 3.78;
+}
 
-pack.style.width = widthInput.value + "px";
-pack.style.height = heightInput.value + "px";
+function update(){
+  document.getElementById("lineText").innerText = line.value;
+  document.getElementById("productText").innerText = product.value;
+  document.getElementById("ingredientsText").innerText = ingredients.value;
+  document.getElementById("weightText").innerText = weight.value;
+  document.getElementById("mrpText").innerText = mrp.value;
+  document.getElementById("packedText").innerText = packed.value;
+  document.getElementById("bestText").innerText = best.value;
+
+  let widthPx = mmToPx(widthMM.value);
+  let heightPx = mmToPx(heightMM.value);
+
+  pack.style.width = widthPx + "px";
+  pack.style.height = heightPx + "px";
 }
 
 document.querySelectorAll("input, textarea, select")
 .forEach(el => el.addEventListener("input", update));
 
-function preview(){
-pack.style.transform = "scale(1)";
-}
-
 function downloadImage(){
-html2canvas(pack, {scale:2}).then(canvas=>{
-let link=document.createElement("a");
-link.download="packaging.png";
-link.href=canvas.toDataURL();
-link.click();
-});
+  html2canvas(pack,{scale:2}).then(canvas=>{
+    let link=document.createElement("a");
+    link.download="packaging.png";
+    link.href=canvas.toDataURL();
+    link.click();
+  });
 }
 
 update();
@@ -185,4 +191,3 @@ update();
 
 </body>
 </html>
-
