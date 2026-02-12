@@ -2,214 +2,178 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Euro Craft Packaging Tool</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<title>EURO CRAFT – Packaging Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f2f2f2;
+body {
+margin: 0;
+font-family: Arial, Helvetica, sans-serif;
+background: #f3f3f3;
+display: flex;
 }
 
-.wrapper{
-  display:flex;
-  gap:20px;
-  padding:20px;
-}
-
-.controls{
-  width:320px;
-  background:white;
-  padding:15px;
-  border-radius:10px;
+.controls {
+width: 260px;
+padding: 12px;
+background: #ffffff;
+box-shadow: 2px 0 8px rgba(0,0,0,0.1);
 }
 
 .controls input,
-.controls textarea,
 .controls select,
-.controls button{
-  width:100%;
-  margin-bottom:10px;
-  padding:8px;
-  font-size:14px;
+.controls button {
+width: 100%;
+margin-bottom: 10px;
+padding: 8px;
+font-size: 14px;
 }
 
-.controls button{
-  background:#1f3d34;
-  color:white;
-  border:none;
-  cursor:pointer;
+button {
+background: #1f3d33;
+color: #fff;
+border: none;
+cursor: pointer;
 }
 
-.preview-area{
-  flex:1;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+.preview-wrapper {
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+overflow: auto;
+padding: 20px;
 }
 
-.pack{
-  border-radius:14px;
-  color:white;
-  position:relative;
-  background:#1f3d34;
-  overflow:hidden;
+#label {
+background: #1f3d33;
+color: #fff;
+position: relative;
+box-sizing: border-box;
 }
 
-.header{
-  text-align:center;
-  padding:20px;
+.brand {
+text-align: center;
+font-weight: 700;
 }
 
-.brand{
-  font-size:22px;
-  font-weight:bold;
+.line {
+text-align: center;
+letter-spacing: 1px;
+opacity: 0.9;
 }
 
-.line{
-  margin-top:6px;
-  white-space:nowrap;
-  text-align:center;
-  letter-spacing:1px;
-  font-weight:500;
+.product {
+text-align: center;
+font-weight: 500;
 }
 
-.product{
-  font-size:20px;
-  margin-top:10px;
+.photo {
+margin: 20px auto;
+width: 80%;
+height: 35%;
+background: rgba(255,255,255,0.25);
+border-radius: 12px;
 }
 
-.window{
-  height:40%;
-  margin:20px;
-  background:rgba(255,255,255,0.2);
-  border-radius:10px;
-}
-
-.footer{
-  position:absolute;
-  bottom:0;
-  background:white;
-  color:black;
-  width:100%;
-  padding:10px;
-  font-size:11px;
+.info {
+background: #fff;
+color: #000;
+padding: 12px;
+font-size: 12px;
+line-height: 1.4;
+position: absolute;
+bottom: 0;
+width: 100%;
+box-sizing: border-box;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
-
 <div class="controls">
-
 <select id="line">
-<option value="READY">READY TO EAT</option>
-<option value="PRO">PRO</option>
+<option>READY TO EAT</option>
+<option>PRO</option>
 </select>
 
 <input id="product" placeholder="Product name">
-<textarea id="ingredients" placeholder="Ingredients"></textarea>
-<input id="weight" placeholder="Net weight (g)">
-<input id="mrp" placeholder="MRP">
-<input id="packed" placeholder="Packed on">
+<input id="ingredients" placeholder="Ingredients">
+<input id="netwt" placeholder="Net weight (g)">
+<input id="mrp" placeholder="MRP ₹">
+<input id="packed" placeholder="Packed date">
 <input id="best" placeholder="Best before">
 
 <hr>
 
 <label>Width (mm)</label>
-<input id="widthMM" type="number" value="120">
+<input id="width" type="number" value="170">
 
 <label>Height (mm)</label>
-<input id="heightMM" type="number" value="220">
+<input id="height" type="number" value="280">
 
-<button onclick="downloadImage()">Save PNG</button>
-
+<button onclick="render()">Preview</button>
+<button onclick="savePNG()">Save PNG</button>
 </div>
 
-<div class="preview-area">
-<div class="pack" id="pack">
-<div class="header">
-<div class="brand">EURO CRAFT FOODS</div>
+<div class="preview-wrapper">
+<div id="label">
+<div class="brand" id="brandText">EURO CRAFT FOODS</div>
 <div class="line" id="lineText">READY TO EAT</div>
-<div class="product" id="productText"></div>
+<div class="product" id="productText">PRODUCT NAME</div>
+
+<div class="photo"></div>
+
+<div class="info" id="infoText">
+INGREDIENTS:<br>
+NET WT:<br>
+MRP:<br>
+PACKED:<br>
+BEST BEFORE:<br>
+FSSAI: 000319963
+</div>
+</div>
 </div>
 
-<div class="window"></div>
-
-<div class="footer">
-<div>INGREDIENTS: <span id="ingredientsText"></span></div>
-<div>NET WT: <span id="weightText"></span> g</div>
-<div>MRP: ₹<span id="mrpText"></span></div>
-<div>PACKED: <span id="packedText"></span></div>
-<div>BEST BEFORE: <span id="bestText"></span></div>
-<div>FSSAI: 000319963</div>
-</div>
-</div>
-</div>
-
-</div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
-const pack = document.getElementById("pack");
+function render() {
+let w = +width.value;
+let h = +height.value;
 
-function mmToPx(mm){
-  return mm * 3.78;
+// scale: 1mm = 3px (примерно для экрана)
+label.style.width = (w * 3) + "px";
+label.style.height = (h * 3) + "px";
+
+brandText.style.fontSize = (h * 0.06) + "px";
+lineText.style.fontSize = (h * 0.03) + "px";
+productText.style.fontSize = (h * 0.045) + "px";
+
+lineText.innerText = line.options[line.selectedIndex].text;
+productText.innerText = product.value.toUpperCase();
+
+infoText.innerHTML =
+`INGREDIENTS: ${ingredients.value}<br>
+NET WT: ${netwt.value} g<br>
+MRP: ₹${mrp.value}<br>
+PACKED: ${packed.value}<br>
+BEST BEFORE: ${best.value}<br>
+FSSAI: 000319963`;
 }
 
-function update(){
-
-  // ТЕКСТ
-  document.getElementById("lineText").innerText = document.getElementById("line").value;
-  document.getElementById("productText").innerText = product.value;
-  document.getElementById("ingredientsText").innerText = ingredients.value;
-  document.getElementById("weightText").innerText = weight.value;
-  document.getElementById("mrpText").innerText = mrp.value;
-  document.getElementById("packedText").innerText = packed.value;
-  document.getElementById("bestText").innerText = best.value;
-
-  // РАЗМЕР УПАКОВКИ
-  let widthPx = mmToPx(widthMM.value);
-  let heightPx = mmToPx(heightMM.value);
-
-  pack.style.width = widthPx + "px";
-  pack.style.height = heightPx + "px";
-
-  // 🔥 МАСШТАБ ШРИФТОВ ОТ ВЫСОТЫ
-  let scale = heightPx / 220; // 220мм = базовый размер
-
-  // БАЗОВАЯ ВЫСОТА 220мм
-let baseHeightPx = mmToPx(220);
-let ratio = heightPx / baseHeightPx;
-
-// Типографическая система
-document.querySelector(".brand").style.fontSize = (38 * ratio) + "px";
-document.querySelector(".line").style.fontSize = (18 * ratio) + "px";
-document.querySelector(".product").style.fontSize = (34 * ratio) + "px";
-document.querySelector(".footer").style.fontSize = (14 * ratio) + "px";
+function savePNG() {
+html2canvas(label, {scale: 3}).then(canvas => {
+let link = document.createElement("a");
+link.download = "euro-craft-label.png";
+link.href = canvas.toDataURL();
+link.click();
+});
 }
 
-document.querySelectorAll("input, textarea, select")
-.forEach(el => el.addEventListener("input", update));
-
-function downloadImage(){
-  html2canvas(pack,{scale:3}).then(canvas=>{
-    let link=document.createElement("a");
-    link.download="packaging.png";
-    link.href=canvas.toDataURL();
-    link.click();
-  });
-}
-
-update();
+render();
 </script>
 
 </body>
 </html>
-
-
-
